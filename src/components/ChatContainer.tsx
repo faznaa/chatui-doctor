@@ -132,7 +132,7 @@ export default function ChatContainer({ people, person: email }: any) {
                     alt=""
                   />
                 )}
-                {chat.type=='select' ? <div className={`rounded-2xl ${chat.selected==true ? 'bg-white' : 'bg-blue-200' } px-4 py-2 sm:max-w-[50%] border-2 border-[#4CB0C4]  hover:bg-blue-200 cursor-pointer`}>
+                {chat.type=='select' ? <div className={`rounded-2xl ${chat.selected==false ? 'bg-white' : 'bg-blue-200' } px-4 py-2 sm:max-w-[50%] border-2 border-[#4CB0C4]  hover:bg-blue-200 cursor-pointer`}>
                     {chat.message}
                     </div>: <div className={`${chat.sender =='patient' ? 'bg-[#CAF0F8]' : 'bg-[#4CB0C4]'} rounded-2xl px-4 py-2 sm:max-w-[50%]`}>
                   {chat.message}
