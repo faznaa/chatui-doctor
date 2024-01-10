@@ -23,7 +23,7 @@ export default function Home() {
       <div className='sm:w-full bg-white h-full'>
         <ChatContainer  people={people} person={person}/>
       </div>
-      <div className='sm:w-6/12 bg-white h-full'>
+      <div className='sm:w-6/12 bg-white h-screen'>
         <PatientDetails  people={people} person={person} />
       </div>
 
