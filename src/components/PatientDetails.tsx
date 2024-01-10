@@ -15,9 +15,9 @@ export default function PatientDetails({ people,person:email }:any) {
   )
   return (
     <div className=' text-black p-6 h-screen overflow-y-scroll'>
-        <h1 className="text-2xl font-bold">Chat Info</h1>
+        <h1 className="text-2xl font-bold pb-6">Chat Info</h1>
         <div className=' px-2 flex flex-col gap-y-4 h-full overflow-y-scroll '>
-            <div><SubHeading>Name</SubHeading>
+            {/* <div><SubHeading>Name</SubHeading>
             <Content>{person?.name}</Content></div>
             <div>
                 <SubHeading>Email</SubHeading>
@@ -28,7 +28,7 @@ export default function PatientDetails({ people,person:email }:any) {
             </div>
             <div className=''><p className='text-black '>Medicines </p>
             <div className='flex flex-wrap gap-2'>     {person?.medicines.map((medicine:any) => (<p className='bg-gray-200 px-3 py-1 rounded-md text-gray-700'>{medicine}</p>))}</div>
-            </div>
+            </div> */}
             {/* 1.	Surgery Details
 	•	Type of Surgery: Appendectomy
 	•	Date of Surgery: January 15, 2024
@@ -43,25 +43,7 @@ export default function PatientDetails({ people,person:email }:any) {
 	•	Recovery Progress: Patient is responding well to post-operative care, pain management is effective, and diet is gradually returning to normal.
 	4.	Additional Notes
 	•	John has been advised to avoid strenuous activities for the next 4 weeks. Follow-up consultation scheduled for February 10, 2024. */}
-
-        <div>
-            <SubHeading type='x'>Surgery Details</SubHeading>
-            <div className='flex flex-col gap-y-2'>
-                <div className='flex gap-x-2'>
-                   <SubHeading >Type of Surgery:</SubHeading>
-                    <p className='text-gray-700'>Appendectomy</p>
-                </div>
-                <div className='flex gap-x-2'>
-                    <SubHeading  >Date of Surgery:</SubHeading>
-                    <p className='text-gray-700'>January 15, 2024</p>
-                </div>
-                <div className='flex gap-x-2'>
-                    <SubHeading  >Surgeon’s Name:</SubHeading>
-                    <p className='text-gray-700'>Dr. Emily Clark</p>
-                </div>
-            </div>
-        </div>
-        <div>
+<div>
             <SubHeading type='x'>Patient Information</SubHeading>
             <div className='flex flex-col gap-y-2'>
                 <div className='flex gap-x-2'>
@@ -79,6 +61,24 @@ export default function PatientDetails({ people,person:email }:any) {
             </div>
         
     </div>
+        <div>
+            <SubHeading type='x'>Surgery Details</SubHeading>
+            <div className='flex flex-col gap-y-2'>
+                <div className='flex gap-x-2'>
+                   <SubHeading >Type of Surgery:</SubHeading>
+                    <p className='text-gray-700'>Appendectomy</p>
+                </div>
+                <div className='flex gap-x-2'>
+                    <SubHeading  >Date of Surgery:</SubHeading>
+                    <p className='text-gray-700'>January 15, 2024</p>
+                </div>
+                <div className='flex gap-x-2'>
+                    <SubHeading  >Surgeon’s Name:</SubHeading>
+                    <p className='text-gray-700'>Dr. Emily Clark</p>
+                </div>
+            </div>
+        </div>
+        
     <div>
             <SubHeading type='x'>Post-Surgery Status</SubHeading>
             <div className='flex flex-col gap-y-2'>

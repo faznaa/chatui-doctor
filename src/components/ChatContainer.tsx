@@ -41,8 +41,36 @@ export default function ChatContainer({ people, person: email }: any) {
     {
       sender: "chatbot",
       message:
-        "Understood. Let's proceed to the details of your recent surgery. What type of surgery did you have? [A] Appendectomy, [B] Gallbladder Removal, [C] Knee Replacement",
+        "Understood. Let's proceed to the details of your recent surgery. What type of surgery did you have? ",
     },
+    {
+        sender:'chatbot',
+        message:'Appendectomy',
+        type:"select",
+        selected:true
+
+    },
+    {
+        sender:'chatbot',
+        message:'Gallbladder Removal',
+        type:"select",
+        selected:false
+
+
+    },
+    {
+        sender:'chatbot',
+        message:'Knee Replacement',
+        type:"select",
+        selected:false
+
+
+    },
+    {
+        sender:'patient',
+        message:'Appendectomy',
+
+    }
     
   ];
   const [chats, setChats] = React.useState(_chats);
@@ -104,11 +132,13 @@ export default function ChatContainer({ people, person: email }: any) {
                     alt=""
                   />
                 )}
-                <div className={`${chat.sender =='patient' ? 'bg-[#CAF0F8]' : 'bg-[#90E0EF]'} rounded-2xl px-4 py-2 sm:max-w-[50%]`}>
+                {chat.type=='select' ? <div className={`rounded-2xl ${chat.selected==true ? 'bg-white' : 'bg-blue-200' } px-4 py-2 sm:max-w-[50%] border-2 border-[#4CB0C4]  hover:bg-blue-200 cursor-pointer`}>
+                    {chat.message}
+                    </div>: <div className={`${chat.sender =='patient' ? 'bg-[#CAF0F8]' : 'bg-[#4CB0C4]'} rounded-2xl px-4 py-2 sm:max-w-[50%]`}>
                   {chat.message}
-                </div>
+                </div>}
                 {
-                    chat.sender == 'chatbot' && (
+                    chat.sender == 'chatbot' && chat.type!=='select' && (
                         <img
                         className="h-12 w-12 flex-none rounded-full bg-gray-50"
                         src="https://www.techzim.co.zw/wp-content/uploads/2021/07/Doc-Online.jpg"
