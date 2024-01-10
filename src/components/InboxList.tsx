@@ -37,8 +37,8 @@ function MessageBox({ people, setPerson }:any) {
   
 export default function InboxList({ people, setPerson }:any) {
     return (
-        <div className="px-4 py-4">
-            <h1 className="text-2xl font-bold">Messages</h1>
+        <div className="px-4 py-4 ">
+            <h1 className="text-2xl font-bold">Patients</h1>
             {/* Searchbox  */}
             <div className="relative mt-2 rounded-md shadow-sm">
         <input

@@ -12,8 +12,8 @@ const inter = Inter({ subsets: ['latin'] })
 export default function Home() {
   const [person, setPerson] = useState(people[0].email)
   return (
-    <div className='h-screen text-black bg-white w-full sm:flex justify-between items-center'>
-      <div className='sm:w-[60px] bg-indigo-900 h-full'>
+    <div className='h-screen text-black bg-[#CAF0F8] w-full sm:flex justify-between items-center'>
+      <div className='sm:w-[60px] bg-[#023E8A] h-full'>
         <Navigation />
       </div>
       <div className='sm:w-5/12 bg-white h-full'>

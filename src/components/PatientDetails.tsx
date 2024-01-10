@@ -7,15 +7,23 @@ export default function PatientDetails({ people,person:email }:any) {
         setPerson(people.find((p:any) => p.email == email))
     },[email])
     
+  const SubHeading = ({ children , type='y'}:any) => (
+    <h2 className={`text-black ${type=='x' ? 'font-bold text-lg' :'font-semibold'}`}>{children}</h2>
+  )
+  const Content = ({ children }:any) => (
+    <p className='text-gray-700'>{children}</p>
+  )
   return (
     <div className=' text-black p-6 h-screen overflow-y-scroll'>
-        <h1 className="text-2xl font-bold">Patient Details</h1>
+        <h1 className="text-2xl font-bold">Chat Info</h1>
         <div className=' px-2 flex flex-col gap-y-4 h-full overflow-y-scroll '>
-            <div><p className='text-black'>Name</p>
-            <p className='text-gray-700'>{person?.name}</p></div>
-            <div><p className='text-black'>Email</p>
-            <p className='text-gray-700'>{person?.email}</p></div>
-            <div className=''><p className='text-black '>Medical Conditions</p>
+            <div><SubHeading>Name</SubHeading>
+            <Content>{person?.name}</Content></div>
+            <div>
+                <SubHeading>Email</SubHeading>
+                <Content>{person?.email}</Content>
+                </div>
+            <div className=''><SubHeading>Medical Conditions</SubHeading>
             <div className='flex flex-wrap gap-2'>            {person?.medical_conditions?.map((condition:any) => (<p className='bg-gray-200 px-3 py-1 rounded-md text-gray-700'>{condition}</p>))}</div>
             </div>
             <div className=''><p className='text-black '>Medicines </p>
@@ -37,53 +45,53 @@ export default function PatientDetails({ people,person:email }:any) {
 	•	John has been advised to avoid strenuous activities for the next 4 weeks. Follow-up consultation scheduled for February 10, 2024. */}
 
         <div>
-            <p className='text-black '>Surgery Details</p>
+            <SubHeading type='x'>Surgery Details</SubHeading>
             <div className='flex flex-col gap-y-2'>
                 <div className='flex gap-x-2'>
-                    <p className='text-gray-700'>Type of Surgery:</p>
+                   <SubHeading >Type of Surgery:</SubHeading>
                     <p className='text-gray-700'>Appendectomy</p>
                 </div>
                 <div className='flex gap-x-2'>
-                    <p className='text-gray-700'>Date of Surgery:</p>
+                    <SubHeading  >Date of Surgery:</SubHeading>
                     <p className='text-gray-700'>January 15, 2024</p>
                 </div>
                 <div className='flex gap-x-2'>
-                    <p className='text-gray-700'>Surgeon’s Name:</p>
+                    <SubHeading  >Surgeon’s Name:</SubHeading>
                     <p className='text-gray-700'>Dr. Emily Clark</p>
                 </div>
             </div>
         </div>
         <div>
-            <p className='text-black '>Patient Information</p>
+            <SubHeading type='x'>Patient Information</SubHeading>
             <div className='flex flex-col gap-y-2'>
                 <div className='flex gap-x-2'>
-                    <p className='text-gray-700'>Patient Name:</p>
+                    <SubHeading >Patient Name:</SubHeading>
                     <p className='text-gray-700'>John Doe</p>
                 </div>
                 <div className='flex gap-x-2'>
-                    <p className='text-gray-700'>Age:</p>
+                    <SubHeading >Age</SubHeading>
                     <p className='text-gray-700'>34</p>
                 </div>
-                <div className='flex gap-x-2'>
-                    <p className='text-gray-700'>Medical History:</p>
+                <div className=' gap-x-2'>
+                    <SubHeading >Medical History:</SubHeading>
                     <p className='text-gray-700'>No prior major surgeries; history of mild gastrointestinal issues.</p>
                 </div>
             </div>
         
     </div>
     <div>
-            <p className='text-black '>Post-Surgery Status</p>
+            <SubHeading type='x'>Post-Surgery Status</SubHeading>
             <div className='flex flex-col gap-y-2'>
                 <div className='flex gap-x-2'>
-                    <p className='text-gray-700'>Days Since Surgery:</p>
+                    <SubHeading >Days Since Surgery:</SubHeading>
                     <p className='text-gray-700'>10 days</p>
                 </div>
-                <div className='flex gap-x-2'>
-                    <p className='text-gray-700'>Current Health Status:</p>
+                <div className=' gap-x-2'>
+                    <SubHeading >Current Health Status:</SubHeading>
                     <p className='text-gray-700'>Stable, showing signs of good recovery. No signs of infection at the surgical site.</p>
                 </div>
-                <div className='flex gap-x-2'>
-                    <p className='text-gray-700'>Recovery Progress:</p>
+                <div className=' gap-x-2'>
+                    <SubHeading >Recovery Progress:</SubHeading>
                     <p className='text-gray-700'>Patient is responding well to post-operative care, pain management is effective, and diet is gradually returning to normal.</p>
                 </div>
             </div>
