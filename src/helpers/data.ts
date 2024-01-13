@@ -32,7 +32,8 @@ const people = [
       lastSeen: '3h ago',
       lastSeenDateTime: '2023-01-23T13:23Z',
       medicines:['Aziwok','Azicip','Azithromycin','Sefdin'],
-      medical_conditions:['Cancer','Diabetes']
+      medical_conditions:['Cancer','Diabetes'],
+      surgery:'POD 7 appendectomy'
     },
     {
       name: 'Michael Foster',
@@ -44,6 +45,7 @@ const people = [
       lastSeenDateTime: '2023-01-23T13:23Z',
       medicines:['Azee','Azomax','Zithrox','Cefakind'],
       medical_conditions:['Heart Disease', 'Blood Pressure','Stroke'],
+      surgery:'POD 3 hernia repair'
     },
     {
       name: 'Dries Vincent',
@@ -54,6 +56,7 @@ const people = [
       lastSeen: null,
       medicines:['Azithral','Azivista','Zithrox Plus','Cefdinir'],
       medical_conditions:['Asthma','Arthritis'],
+      surgery:'POD 15 cholycystectomy'
     },
     {
       name: 'Lindsay Walton',
@@ -65,6 +68,7 @@ const people = [
       lastSeenDateTime: '2023-01-23T13:23Z',
       medicines:['Azicip','Azivista','Zithrox Plus','Cefdinir'],
       medical_conditions:['Depression','Kidney Disease','Chronic Bronchitis'],
+      surgery:'POD 19 colectomy'
     },
     {
       name: 'Courtney Henry',
@@ -76,6 +80,7 @@ const people = [
       lastSeenDateTime: '2023-01-23T13:23Z',
       medicines:['Azivista','Zithrox Plus','Cefdinir'],
       medical_conditions:['Chronic Obstructive Pulmonary Disease (COPD)','Emphysema','HIV/AIDS'],
+      surgery:'POD 21 mastectomy'
     },
     {
       name: 'Tom Cook',
@@ -86,6 +91,7 @@ const people = [
       lastSeen: null,
       medicines:['Azee','Azomax','Zithrox','Sefdin'],
       medical_conditions:['Alzheimer’s Disease','Dementia','Osteoporosis'],
+      surgery:'POD 23 appendectomy'
     },
   ]
 

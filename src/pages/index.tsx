@@ -6,13 +6,15 @@ import ChatContainer from '@/components/ChatContainer'
 import { useState } from 'react'
 import PatientDetails from '@/components/PatientDetails'
 import { medical_conditions, medicines, people } from '@/helpers/data'
+import ChatSteps from '@/components/ChatSteps'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+const ChatUIOld = () => {
   const [person, setPerson] = useState(people[0].email)
-  return (
-    <div className='h-screen text-black bg-[#CAF0F8] w-full sm:flex justify-between items-center'>
+  
+return (
+  <div className='h-screen text-black bg-[#CAF0F8] w-full sm:flex justify-between items-center'>
       <div className='sm:w-[60px] bg-[#023E8A] h-full'>
         <Navigation />
       </div>
@@ -27,6 +29,14 @@ export default function Home() {
         <PatientDetails  people={people} person={person} />
       </div>
 
+    </div>
+)
+}
+
+export default function Home() {
+  return (
+    <div className='min-h-screen text-black bg-sky-900 w-full sm:flex justify-between items-center'>
+      <ChatSteps />
     </div>
   )
 }
