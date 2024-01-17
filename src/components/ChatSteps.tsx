@@ -7,13 +7,13 @@ const Home = ({ nextStep }: any) => (
   <div className="text-center flex flex-col ">
     <h1 className="text-4xl sm:text-9xl font-bold text-white my-2">re:surge</h1>
     <h3 className="text-3xl font-semibold text-white font-italic">
-      <i>Speak with your Doctor</i>
+      <i> Reinventing the on-call experience.</i>
     </h3>
     <button
       onClick={() => nextStep()}
       className="mt-16 bg-white rounded-xl text-xl px-6 py-3 text-sky-900 font-semibold"
     >
-      GET STARTED TO DEMO
+      PRESS HERE TO BEGIN DEMO
     </button>
   </div>
 );
@@ -23,7 +23,7 @@ const doctorImage = 'https://plus.unsplash.com/premium_photo-1661764878654-3d0fc
 export default function ChatSteps() {
   const [currentStep, helpers] = useStep(5);
 
-  const [email,setEmail] = React.useState('')
+  const [patientNumber,setPatientNumber] = React.useState(1)
   const [patient,setPatient] = React.useState<any>(people[0])
   const _concerns = [
     "Fever","Wound concern","Pain","Bowel movements","Wound healing","Staple/sutures","Drains","Other"]
@@ -32,9 +32,9 @@ export default function ChatSteps() {
  
   const [concerns,setConcerns] = React.useState<any>(_concerns)
     useEffect(() => {
-        const person = people.find((person) => person.email == email)
+        const person = people.find((person) => person.patient_number == patientNumber)
         if(person) setPatient(person)
-    },[email])
+    },[patientNumber])
   const {
     canGoToPrevStep,
     canGoToNextStep,
@@ -45,37 +45,49 @@ export default function ChatSteps() {
   } = helpers;
 
   const ChoosePatient = () => {
-    const choose = (email:string) => {
-        setEmail(email)
+    const choose = (patientNumber:number) => {
+        setPatientNumber(patientNumber)
         goToNextStep()
     }
     return(
-    <div className="text-center grid grid-cols-3 w-full ">
-        {people.map((person) => (<div className="sm:w-[400px] sm:h-[200px] cursor-pointer my-10 flex flex-col items-center text-white justify-center" onClick={() => choose(person.email)}>
-            <img src={person.imageUrl} alt="" className='h-40 w-40 rounded-full'/>
-            <h1 className="text-2xl font-semibold">{person.name.split(" ")[0]}</h1>
-            <h3 className="text-lg">{person.surgery}</h3>
+    <div>
+      <h1 className="text-5xl font-bold  p-6 text-white pl-20 ">
+      Choose one of the following patients using<br/> <i>re:surge</i>  to connect with their surgeon:
+      </h1>
+      <div className="text-center grid grid-cols-4 w-full ">
+        {people.map((person) => (<div className="sm:w-[400px] sm:h-[200px] cursor-pointer my-10 flex flex-col items-center text-white justify-center" onClick={() => choose(person.patient_number)}>
+            <div className="w-36 h-36 border-2 border-white overflow-hidden rounded-[50%]  bg-white flex justify-center items-center">
+            <img src={`/photos/${person.patient_number}.jpg`} alt="" className='object-cover h-40'/>
+            </div>
+            <h1 className="text-2xl font-semibold">{person.first_name}</h1>
+            <h3 className="text-lg font-semibold">POD {person.pod_day} {person.procedure}</h3>
         </div>))}
-    </div>)
+    </div>
+    </div>
+      )
   };
   const ChatRepeatComponent = ({ children ,sidebar }:any) => <div className="relative w-full flex flex-col items-center min-w-screen ">
   {/* Top left corner profile picture  */}
   <div className="absolute top-0 left-0 z-10 text-white m-4">
       <div className="flex justify-start gap-x-4">
-      <img src={patient.imageUrl} alt="" className='h-20 w-20 rounded-full'/>
+      <div className="w-20 h-20  overflow-hidden rounded-[50%]  bg-white flex justify-center items-center">
+            <img src={`/photos/${patient.patient_number}.jpg`} alt="" className='object-cover h-24'/>
+            </div>
       <div>
-          <h1 className="text-xl font-semibold">{patient.name}</h1>
-          <h3 className="text-lg">{patient.surgery}</h3>
-          <h3 className="text-lg">Dr.Stein</h3>
+          <h1 className="text-xl font-semibold">{patient.full_name}</h1>
+          <h3 className="text-lg">POD{patient.pod_day} {patient.procedure}</h3>
+          <h3 className="text-lg">Dr.{patient.surgeon}</h3>
 
       </div>
       </div>
   </div>
   {/* Chatbox  */}
  <div className="w-full flex justify-around items-center mt-20">
- <div className="w-1/2 sm:max-w-md bg-white rounded-3xl  mt-20 mx-12 h-[600px] relative">
+ <div className="w-1/2 sm:max-w-md bg-white rounded-3xl  mt-20 mx-12 h-[700px] relative overflow-y-scroll">
       <div className="w-full flex items-center justify-center gap-y-4 p-4">
-      <img alt="doctor" src={doctorImage} className='h-20 w-20 rounded-full'/>
+      <div className="w-20 h-20  overflow-hidden rounded-[50%]  bg-white flex justify-center items-center">
+            <img src={`/photos/doctor.jpg`} alt="" className='object-cover h-24'/>
+            </div>
 
       </div>
       {children}
@@ -97,17 +109,17 @@ export default function ChatSteps() {
     return (
         <ChatRepeatComponent sidebar={""}>
             <>
-            <p className="text-center mt-6">
-      Hi {patient.name.split(" ")[0]}, I am Jess, Dr.Stein's virtual re:surge assistant. I will be helping collect the right information
-      about your concern and directing it to Dr.Stein or a colleague on-call.
-      </p>
-      <p className="mt-4 text-center">
-          To begin, do you mind telling me what type of concern you have related to your recent {patient.surgery} ?
-      </p>
+            <p className="text-center mt-3 px-2">
+            Hello, {patient.first_name}!, I hope you’re doing well {patient.pod_day} days since your {patient.procedure} with Dr.{patient.surgeon}! My name is Jess and I’m a re:surge virtual medical assistant. I will help to collect important information about your concern today and urgently send it to Dr.{patient.surgeon} or the covering provider. </p>
+            <p className="text-center mt-3 px-2">To begin, can you please select which of the following best describes your concern? If it’s not listed, you can choose “other”.
 
-      <div className="grid grid-cols-2 gap-y-4 mt-8">
+      
+      </p>
+     
+
+      <div className="grid grid-cols-2 gap-y-3 mt-8">
           {concerns.map((concern:any) => <div className="flex justify-center items-center w-full px-8 ">
-              <div className="bg-sky-600 rounded-2xl px-4 py-2 w-full h-16 flex justify-center items-center text-white text-center cursor-pointer" onClick={() => nextStep(concern)}>
+              <div className="bg-sky-600 rounded-2xl px-4 py-1 w-full h-14 flex justify-center items-center text-white text-center cursor-pointer" onClick={() => nextStep(concern)}>
               {concern}
               </div>
           </div>)}
@@ -130,18 +142,17 @@ export default function ChatSteps() {
     }
     const [allMsgs, setAllMsgs] = useState<any>([])
     return (
-        <ChatRepeatComponent sidebar={isMessageGeneratedVisible ? (<div className="font-semibold bg-white sm:max-w-md px-4 rounded-lg h-[600px] mt-20">
+        <ChatRepeatComponent sidebar={isMessageGeneratedVisible ? (<div className="font-semibold bg-white sm:max-w-md px-4 rounded-lg h-[700px] mt-20 overflow-y-scroll">
           <div className="flex justify-end p-2 ">
             <button onClick={() => setMessageGeneratedVisible(false)} className="text-sky-600 font-semibold">
               <XMarkIcon className="w-6 h-6"/>
             </button>
           </div>
           <br/>
-          <div> Name : {patient.name} </div>
-          <div> Email : {patient.email} </div>
+          <div> Name : {patient.full_name} </div>
           <div> Age : 28 </div>
           <div>Surgeon : Stein</div>
-          <div> Procedure : {patient.surgery} </div>
+          <div> Procedure : {patient.procedure} </div>
           <div className="my-4">
             Chief complaint : {selectedConcerns}
           </div>
@@ -172,7 +183,10 @@ export default function ChatSteps() {
   <div className="absolute bottom-0  w-full border-t border-black">
     {/* hello */}
     <div className="flex justify-start items-center gap-x-1 mx-2">
-      <img src={patient.imageUrl} alt="" className='h-10 w-10 my-2 rounded-full'/>
+      {/* <img src={patient.imageUrl} alt="" className='h-10 w-10 my-2 rounded-full'/> */}
+      <div className="w-10 h-10 my-2  overflow-hidden rounded-[50%]  bg-white flex justify-center items-center">
+            <img src={`/photos/${patient.patient_number}.jpg`} alt="" className='object-cover h-16'/>
+            </div>
     <input value={msg} onChange={(e) => setMsg(e.target.value)} type="text" className="w-full  rounded-b-3xl border-0 border-sky-600 rounded-xl px-4 py-2 focus:ring-0 focus:outline-none focus:ring-offset-0" placeholder="Type here" onKeyUp={(e) => checkIfEnterPressed(e)}/>
 
     </div>
@@ -213,6 +227,12 @@ export default function ChatSteps() {
         {/* <button onClick={goToPrevStep}>Prev</button>
         <button onClick={goToNextStep}>Next</button> */}
       </div>
+      {
+        currentStep > 2 &&<div className="absolute top-0 right-0">
+        <h1 className="text-white text-4xl font-bold p-6">re:surge</h1>
+      </div>
+      }
+
     </div>
   );
 }

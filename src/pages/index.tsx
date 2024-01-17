@@ -11,10 +11,10 @@ import ChatSteps from '@/components/ChatSteps'
 const inter = Inter({ subsets: ['latin'] })
 
 const ChatUIOld = () => {
-  const [person, setPerson] = useState(people[0].email)
+  const [person, setPerson] = useState(people[0].patient_number)
   
 return (
-  <div className='h-screen text-black bg-[#CAF0F8] w-full sm:flex justify-between items-center'>
+  <div className='h-screen text-black bg-[#0A316F] w-full sm:flex justify-between items-center'>
       <div className='sm:w-[60px] bg-[#023E8A] h-full'>
         <Navigation />
       </div>

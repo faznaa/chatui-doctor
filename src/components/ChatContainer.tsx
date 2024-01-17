@@ -104,7 +104,7 @@ export default function ChatContainer({ people, person: email }: any) {
           {/* <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={person.imageUrl} alt="" /> */}
           <div className="min-w-0 flex-auto">
             <p className="text-lg font-semibold leading-6 text-gray-100">
-              {person.name}
+              {person.firstName}
             </p>
             {/* <p className="mt-1 truncate text-xs leading-5 text-gray-500">{person.email}</p> */}
           </div>
