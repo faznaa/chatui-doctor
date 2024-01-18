@@ -86,8 +86,11 @@ export default function ChatSteps() {
     toast.info("New message from bot")
     
   } 
+  const [reportLoading, setReportLoading] = useState(false)
   const getReport = async() => {
-    if(report.summary?.length > 0) return ;
+   try {
+    setReportLoading(true)
+    // if(report.summary?.length > 0) return ;
     const { data: _res} = await axios.post(`${baseUrl}/report`,{
       patientId:patient.full_name,
     },{
@@ -111,6 +114,12 @@ export default function ChatSteps() {
     }
     return ;
 
+   }catch(err) {
+      console.log(err)
+      toast.error("Error generating report")
+   }finally{
+      setReportLoading(false)
+   }
     
   }
   useEffect(() => {
@@ -143,6 +152,8 @@ export default function ChatSteps() {
     toast.success("Chat cleared")
     await start('start')
   }
+  const [isMessageGeneratedVisible, setMessageGeneratedVisible] =
+  useState(false);
   const ChoosePatient = () => {
     const choose = (patientNumber: number) => {
       setPatientNumber(patientNumber);
@@ -259,8 +270,7 @@ export default function ChatSteps() {
   };
 
   const ChatPage2 = () => {
-    const [isMessageGeneratedVisible, setMessageGeneratedVisible] =
-      useState(false);
+ 
     const [msg, setMsg] = useState("");
     const checkIfEnterPressed = async(e: any) => {
       if (e.keyCode == 13) {
@@ -291,6 +301,7 @@ export default function ChatSteps() {
               <div>Surgeon : Stein</div>
               <div> Procedure : {patient.procedure} </div>
               <div className="my-4">Chief complaint : {selectedConcern}</div>
+              {reportLoading ? <div className="my-4">Loading report...</div> : ''}
               {report.summary?.length > 0 ? <div className="my-4">
                 Summary : 
                 <ul className="list-disc list-inside">
@@ -312,8 +323,8 @@ export default function ChatSteps() {
             <button
               className="bg-white py-4 px-2 rounded-lg"
               onClick={async() => {
+                await setMessageGeneratedVisible(true);
                 await getReport()
-                setMessageGeneratedVisible(true);
               }}
             >
               Press here to see the message
