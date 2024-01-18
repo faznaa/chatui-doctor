@@ -89,7 +89,7 @@ export default function ChatSteps() {
   const getReport = async() => {
     if(report.summary?.length > 0) return ;
     const { data: _res} = await axios.post(`${baseUrl}/report`,{
-      patientId:'hello2',
+      patientId:patient.full_name,
     },{
      headers:{
       'apiKey':process.env.NEXT_PUBLIC_SECRET_KEY_LENNY
@@ -98,7 +98,7 @@ export default function ChatSteps() {
     console.log(_res)
     console.log("report generated")
     const { data: res} = await axios.post(`${baseUrl}/get-report`,{
-      patientId:'hello2',
+      patientId:patient.full_name,
     },{
      headers:{
       'apiKey':process.env.NEXT_PUBLIC_SECRET_KEY_LENNY
@@ -106,6 +106,7 @@ export default function ChatSteps() {
     })
     console.log(res)
     setReport(res)
+    toast.success("Report generated")
     
   }
   useEffect(() => {
