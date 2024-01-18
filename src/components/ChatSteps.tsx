@@ -105,8 +105,12 @@ export default function ChatSteps() {
      }
     })
     console.log(res)
+    if(res.summary?.length > 0){
     setReport(res)
     toast.success("Report generated")
+    }
+    return ;
+
     
   }
   useEffect(() => {
