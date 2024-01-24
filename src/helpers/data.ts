@@ -172,4 +172,17 @@ const people = [
   },
 ];
 
-export { people, medical_conditions, medicines };
+const concerns = [
+  "Fever",
+  "Wound concern",
+  "Pain",
+  "Constipation",
+  "Prescription issue",
+  "Swelling",
+  "Wound VAC",
+  "Urinary Symptoms",
+  "Drain Issues",
+  "Other",
+];
+
+export { people, medical_conditions, medicines, concerns };
