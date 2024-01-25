@@ -100,9 +100,16 @@ const ChatRepeatComponent = ({ children, sidebar, data }: any) => (
     </div>
   </div>
 );
-const ChatUI = ({ user,children} : any) => (
-  <div className={`w-full flex my-2 ${user==='doctor' ? 'justify-start':'justify-end'}`}>
-    <div className={`w-3/4 flex bg-gray-100 max-w-fit pl-2 p-1 rounded-md ${user==='doctor' ? 'justify-start':'justify-end'} items-center gap-x-1 mx-2`}>
+const ChatUI = ({ user,children, image} : any) => (
+  <div className={`w-full flex my-2 items-start ${user==='doctor' ? 'justify-start':' flex-row-reverse'}`}>
+          <div className="w-8 h-8 mx-2 overflow-hidden rounded-[50%]  bg-white ">
+              <img
+ src={`/photos/${image}.jpg`}
+                 alt=""
+                className="object-cover h-12"
+              />
+            </div>
+    <div className={`w-3/4 flex ${user=='doctor' ? 'bg-gray-100' : 'bg-blue-100'} max-w-fit pl-2 p-1 rounded-md ${user==='doctor' ? 'justify-start':'justify-end'} items-center gap-x-1 mx-2`}>
   {children}
   </div>
   </div>
@@ -176,15 +183,15 @@ const ChatPage2 = ({
     <ChatRepeatComponent
       data={data}
       sidebar={
-        data?.isMessageGeneratedVisible ? (
+        data?.report?.summary?.length>0 ? (
           <div className="font-semibold bg-white sm:max-w-md px-4 rounded-lg h-[600px] mt-20 overflow-y-scroll">
             <div className="flex justify-end p-2 ">
-              <button
+              {/* <button
                 onClick={() => updateData("isMessageGeneratedVisible", false)}
                 className="text-sky-600 font-semibold"
               >
                 <XMarkIcon className="w-6 h-6" />
-              </button>
+              </button> */}
             </div>
             <br />
             <div> Name : {data?.patient.full_name} </div>
@@ -222,6 +229,12 @@ const ChatPage2 = ({
                 ? "Pharmacy: " + data?.report.preferred_pharmacy
                 : ""}
             </div>
+            <button
+              className="mt-6 bg-black text-white py-4 px-2 rounded-lg"
+              onClick={() => deleteChat()}
+            >
+              Clear Chat
+            </button>
           </div>
         ) : (
           <div className="flex flex-col">
@@ -249,12 +262,14 @@ const ChatPage2 = ({
       <>
         <div className="w-full overflow-hidden h-[520px] overflow-y-scroll ">
           <div className="flex flex-col ">
-          <ChatUI user="doctor">Okay. I understand that you are concerned about{" "}
+          <ChatUI user="doctor" image='doctor'>Okay. I understand that you are concerned about{" "}
             {data?.selectedConcern}. I will ask you a few questions to help Dr.{" "}
             {data?.patient?.surgeon} understand your concern better.</ChatUI>
         
   
-              {data?.allMsgs?.map((msg:any) => msg.type=='image' ? <ChatUI user={msg.user}><img src={msg.data} className="h-32 w-32 rounded-sm" /></ChatUI> :<ChatUI user={msg.user}>{msg.text}</ChatUI>)}    </div>  
+              {data?.allMsgs?.map((msg:any) => msg.type=='image' ? 
+              <ChatUI user={msg.user} image={data?.patient?.patient_number} >
+                <img src={msg.data} alt="Image not available at the moment" className="h-32 w-32 rounded-sm" /></ChatUI> :<ChatUI image={msg.user=='doctor' ? 'doctor' :data?.patient?.patient_number } user={msg.user}>{msg.text}</ChatUI>)}    </div>  
         </div>
         <div className="absolute bottom-0  w-full border-t border-black">
           {/* hello */}
@@ -326,7 +341,7 @@ export default function ChatSteps() {
   const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY_LENNY;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const updateData = (key: any, value: any) => {
-    setData({ ...data, [key]: value });
+    setData((data:any) =>({ ...data, [key]: value }));
   };
   useEffect(() => {
     console.log(data);
@@ -339,6 +354,8 @@ export default function ChatSteps() {
       {
         patientId: data?.patient.full_name,
         response,
+        concern: data?.selectedConcern,
+        phone: data?.patient.phone_number,
       },
       {
         headers: {
@@ -353,7 +370,32 @@ export default function ChatSteps() {
     updateData("allMsgs", [...data?.allMsgs, ...msgs]);
     toast.info("New message from bot");
   };
+
   const getReport = async () => {
+    try{
+      const { data: res } = await axios.post(
+        `${baseUrl}/get-report`,
+        {
+          patientId: data?.patient.full_name,
+        },
+        {
+          headers: {
+            apiKey: process.env.NEXT_PUBLIC_SECRET_KEY_LENNY,
+          },
+        }
+      );
+      console.log("REPORT",res);
+      if (res.summary?.length > 0) {
+        updateData("report", res);
+      }
+      return res;
+    }catch(err){
+      console.log(err)
+      toast.error("Error getting report")
+    }
+  }
+
+  const generateReport = async () => {
     try {
       // setReportLoading(true)
       updateData("reportLoading", true);
@@ -371,22 +413,9 @@ export default function ChatSteps() {
       );
       console.log(_res);
       console.log("report generated");
-      const { data: res } = await axios.post(
-        `${baseUrl}/get-report`,
-        {
-          patientId: data?.patient.full_name,
-        },
-        {
-          headers: {
-            apiKey: process.env.NEXT_PUBLIC_SECRET_KEY_LENNY,
-          },
-        }
-      );
-      console.log(res);
-      if (res.summary?.length > 0) {
-        updateData("report", res);
-        toast.success("Report generated");
-      }
+      toast.success("Report generated");
+      await getReport();
+      
       return;
     } catch (err) {
       console.log(err);
@@ -398,7 +427,7 @@ export default function ChatSteps() {
 
   // useEffect(() => {
   //   if (data?.allMsgs.length == 4) {
-  //     getReport();
+  //     generateReportReport();
   //   }
   // }, [data?.allMsgs]);
   const getHistoryChat = async () => {
@@ -420,17 +449,26 @@ export default function ChatSteps() {
       updateData("isFirstMessage", true);
       start("start");
     }
+    return res.msgs
   }
 
+  
   useEffect(() => {
-    // if (data?.selectedConcern && !data?.isFirstMessage) {
-    //   updateData("isFirstMessage", true);
-    //   start("start");
-    // }
-  }, [data?.selectedConcern]);
-  useEffect(() => {
+    const reportFn = async() => {
+     const msg =  await getHistoryChat()
+     console.log("MSG",msg)
+     if(msg.length > 0){
+      const res = await getReport()
+      if(!res || !res.summary || res.summary?.length == 0){
+        await generateReport()
+      }
+     }
+      
+    }
     if(data?.patient?.full_name){
-      getHistoryChat()
+     
+      // getReport()
+      reportFn()
     }
   },[data?.selectedConcern])
   const deleteChat = async () => {
@@ -495,7 +533,7 @@ export default function ChatSteps() {
             data={data}
             updateData={updateData}
             start={start}
-            getReport={getReport}
+            getReport={generateReport}
             deleteChat={deleteChat}
             setImageModal={setImageModal}
           />
