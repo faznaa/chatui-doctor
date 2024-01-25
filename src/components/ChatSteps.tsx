@@ -153,8 +153,7 @@ const ChatPage = ({
       <>
         <p className="text-center mt-3 px-2">
           Hello, {patient.first_name}!, I hope you’re doing well{" "}
-          {patient.pod_day} days since your {patient.procedure} with Dr.
-          {patient.surgeon}! My name is Jess and I’m a re:surge virtual medical
+          {patient.pod_day} days since your {patient.procedure} with Dr. {patient.surgeon}! My name is Jess and I’m a re:surge virtual medical
           assistant. I will help to collect important information about your
           concern today and urgently send it to Dr. {patient.surgeon} or the covering provider.{" "}
         </p>
