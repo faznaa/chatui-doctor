@@ -131,7 +131,7 @@ const ChatUI = ({ user,children, image} : any) => (
                 className="object-cover h-12"
               />
             </div>
-    <div className={`w-3/4 flex ${user=='doctor' ? 'bg-gray-100' : 'bg-blue-100'} max-w-fit pl-2 p-1 rounded-md ${user==='doctor' ? 'justify-start':'justify-end'} items-center gap-x-1 mx-2`}>
+    <div className={`w-7/12 flex ${user=='doctor' ? 'bg-gray-100' : 'bg-blue-100'} max-w-fit pl-2 p-1 rounded-md ${user==='doctor' ? 'justify-start':'justify-end'} items-center gap-x-1 mx-2`}>
   {children}
   </div>
   </div>
@@ -269,13 +269,14 @@ const ChatPage2 = ({
               className="bg-white py-4 px-2 rounded-lg"
               onClick={async () => {
                 await updateData("isMessageGeneratedVisible", true);
+                await updateData("reportLoading", true);
                 await getReport();
               }}
             >
-              Press here to see the message
+              
+              {data?.reportLoading ? "Loading..." :(<>Press here to see the message
               <br /> generated for the
-              <br /> on-call provider
-              {/* {data?.reportLoading && "Loading..."} */}
+              <br /> on-call provider<br/></>) }
             </button>
             <button
               className="mt-6 bg-white py-4 px-2 rounded-lg"
@@ -422,7 +423,6 @@ export default function ChatSteps() {
   const generateReport = async () => {
     try {
       // setReportLoading(true)
-      updateData("reportLoading", true);
       // if(report.summary?.length > 0) return ;
       const { data: _res } = await axios.post(
         `${baseUrl}/report`,
@@ -437,7 +437,7 @@ export default function ChatSteps() {
       );
       console.log(_res);
       console.log("report generated");
-      toast.success("Report generated");
+      // toast.success("Report generated");
       await getReport();
       
       return;
