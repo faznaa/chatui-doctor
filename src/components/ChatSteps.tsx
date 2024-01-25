@@ -192,7 +192,7 @@ const ChatPage2 = ({
   const checkIfEnterPressed = async (e: any) => {
     if (e.keyCode == 13) {
       // setAllMsgs([...allMsgs, msg]);
-      updateData("allMsgs", [...data?.allMsgs, {text:msg, user:"patient"}]);
+      await updateData("allMsgs", [...data?.allMsgs, {text:msg, user:"patient"}]);
       const _msg = msg;
       setMsg("");
       start(_msg);
@@ -239,7 +239,7 @@ const ChatPage2 = ({
               ""
             )}
 
-              Images
+              Images :
             <div className="grid grid-cols-3 gap-y-3 mt-3">
             {data?.report?.new_images?.length > 0 && data?.report?.new_images?.map((image:any) => (
               <img src={image} alt="Not available at the moment" className="h-32 w-32 rounded-sm" />
@@ -389,7 +389,11 @@ export default function ChatSteps() {
     console.log(res);
     updateData("question", res);
     const msgs = response=='start' ? [{text:res, user:"doctor"}] : [{text:response,user:'patient'},{text:res, user:"doctor"}]
+    if(response !== 'start'){
     updateData("allMsgs", [...data?.allMsgs, ...msgs]);
+    }else{
+      updateData("allMsgs", [...msgs]);
+    }
     toast.info("New message from bot");
   };
 
@@ -470,8 +474,8 @@ export default function ChatSteps() {
     const msgs = res.msgs.map((i:any) => ({text:i.text, user:i.sender=='ai'?'doctor':'patient', type:i.type,data:i.data}))
     updateData("allMsgs", msgs);
     if(res.msgs.length ==  0){
-      updateData("isFirstMessage", true);
-      start("start");
+      await updateData("isFirstMessage", true);
+      await start("start");
     }
     return res.msgs
   }
@@ -520,7 +524,7 @@ export default function ChatSteps() {
   //   }
   // }, [data?.report])
   const deleteChat = async () => {
-    await axios.post(
+   const { data:res } = await axios.post(
       `${baseUrl}/delete`,
       {
         patientId: data?.patient.full_name,
@@ -531,14 +535,17 @@ export default function ChatSteps() {
         },
       }
     );
-    updateData("allMsgs", []);
+    await updateData("allMsgs", []);
     // updateData("selectedConcern", null);
-    updateData("report", {
+    await updateData("report", {
       preferred_contact: null,
       summary: [],
     });
     toast.success("Chat cleared");
-    await start("start");
+    setTimeout(async() => {
+      await start("start");
+
+    },1000)
   };
   const uploadImage = async () => {
     await axios.post(`${baseUrl}/create-image`,{
@@ -546,6 +553,7 @@ export default function ChatSteps() {
       images:images
     })
     toast.success("Images uploaded")
+    await start("[patient uploaded the image]")
     const _imagemsgs = images.map((image:any) => ({data:image, user:'patient', type:'image'}))
     updateData("allMsgs", [...data?.allMsgs, ..._imagemsgs]);
     setImages([])
