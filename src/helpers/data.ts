@@ -185,4 +185,59 @@ const concerns = [
   "Other",
 ];
 
-export { people, medical_conditions, medicines, concerns };
+const concern_starting_test = {
+  "Fever": "I understand that you are concerned about a possible fever.",
+  "Wound concern": "I understand that you are concerned about your wound.",
+  "Pain": "I understand that you are concerned about your pain.",
+  "Constipation": "I understand that you are concerned about your bowel movements.",
+  "Prescription issue": "I understand that you are concerned about a prescription issue.",
+  "Swelling": "I understand that you are experiencing swelling.",
+  "Wound VAC": "I understand that you have a concern about your wound VAC.",
+  "Urinary Symptoms": "I understand that you are having urinary symptoms.",
+  "Drain Issues": "I understand that you are having drain issues.",
+  "Other": "I understand that you have an issue you'd like to discuss."
+}
+
+const concerns_starting_msg = [
+  {
+      "concern": "Fever",
+      "message": "I understand that you are concerned about a possible fever."
+  },
+  {
+      "concern": "Wound concern",
+      "message": "I understand that you are concerned about your wound."
+  },
+  {
+      "concern": "Pain",
+      "message": "I understand that you are concerned about your pain."
+  },
+  {
+      "concern": "Constipation",
+      "message": "I understand that you are concerned about your bowel movements."
+  },
+  {
+      "concern": "Prescription issue",
+      "message": "I understand that you are concerned about a prescription issue."
+  },
+  {
+      "concern": "Swelling",
+      "message": "I understand that you are experiencing swelling."
+  },
+  {
+      "concern": "Wound VAC",
+      "message": "I understand that you have a concern about your wound VAC."
+  },
+  {
+      "concern": "Urinary Symptoms",
+      "message": "I understand that you are having urinary symptoms."
+  },
+  {
+      "concern": "Drain Issues",
+      "message": "I understand that you are having drain issues."
+  },
+  {
+      "concern": "Other",
+      "message": "I understand that you have an issue you'd like to discuss."
+  }
+]
+export { people, medical_conditions, medicines, concerns,concerns_starting_msg };

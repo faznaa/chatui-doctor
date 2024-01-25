@@ -1,12 +1,34 @@
-import { concerns, people } from "@/helpers/data";
+import { concerns, concerns_starting_msg, people } from "@/helpers/data";
 import { ArrowLeftIcon, PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useStep } from "usehooks-ts";
 import AudioRecorderApp from "./AudioRecorder";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ImageUpload from "./UploadImage";
 import Modal from "./Modal";
+
+const MessageWrapper = ({ data}: any) => {
+  const ref= useRef<any>(null)
+  useEffect(() => {
+    ref.current.scrollIntoView({ behavior: "smooth" });
+  }, [data?.allMsgs]);
+  return(
+    (
+      <div className="flex flex-col ">
+      <ChatUI user="doctor" image='doctor'>Okay. {concerns_starting_msg.find(({concern}:any) => concern == data?.selectedConcern)?.message} I will ask you a few questions to help Dr.{" "}
+        {data?.patient?.surgeon} understand your concern better.</ChatUI>
+    
+    
+          {data?.allMsgs?.map((msg:any) => msg.type=='image' ? 
+          <ChatUI user={msg.user} image={data?.patient?.patient_number} id={`${msg.user}-${msg.type}-${msg?.data}`}>
+            <img src={msg.data} alt="Image not available at the moment" className="h-32 w-32 rounded-sm" /></ChatUI> :<ChatUI image={msg.user=='doctor' ? 'doctor' :data?.patient?.patient_number } user={msg.user}>{msg.text}</ChatUI>)}   
+            <div ref={ref} /> 
+
+             </div> 
+    )
+  )
+}
 
 const Home = ({ goToNextStep }: any) => (
   <div className="text-center flex flex-col ">
@@ -102,7 +124,7 @@ const ChatRepeatComponent = ({ children, sidebar, data }: any) => (
 );
 const ChatUI = ({ user,children, image} : any) => (
   <div className={`w-full flex my-2 items-start ${user==='doctor' ? 'justify-start':' flex-row-reverse'}`}>
-          <div className="w-8 h-8 mx-2 overflow-hidden rounded-[50%]  bg-white ">
+          <div className="w-8 h-8 mx-4 overflow-hidden rounded-[50%]  bg-white ">
               <img
  src={`/photos/${image}.jpg`}
                  alt=""
@@ -134,8 +156,7 @@ const ChatPage = ({
           {patient.pod_day} days since your {patient.procedure} with Dr.
           {patient.surgeon}! My name is Jess and I’m a re:surge virtual medical
           assistant. I will help to collect important information about your
-          concern today and urgently send it to Dr.
-          {patient.surgeon} or the covering provider.{" "}
+          concern today and urgently send it to Dr. {patient.surgeon} or the covering provider.{" "}
         </p>
         <p className="text-center mt-3 px-2">
           To begin, can you please select which of the following best describes
@@ -209,7 +230,7 @@ const ChatPage2 = ({
             {data?.report.summary?.length > 0 ? (
               <div className="my-4">
                 Summary :
-                <ul className="list-disc list-inside">
+                <ul className="ml-5 list-disc list-outside">
                   {data?.report.summary.map((item: any) => (
                     <li>{item}</li>
                   ))}
@@ -230,7 +251,7 @@ const ChatPage2 = ({
                 : ""}
             </div>
             <button
-              className="mt-6 bg-black text-white py-4 px-2 rounded-lg"
+              className="mt-6 bg-black text-white py-2 px-2 rounded-lg"
               onClick={() => deleteChat()}
             >
               Clear Chat
@@ -261,15 +282,8 @@ const ChatPage2 = ({
     >
       <>
         <div className="w-full overflow-hidden h-[520px] overflow-y-scroll ">
-          <div className="flex flex-col ">
-          <ChatUI user="doctor" image='doctor'>Okay. I understand that you are concerned about{" "}
-            {data?.selectedConcern}. I will ask you a few questions to help Dr.{" "}
-            {data?.patient?.surgeon} understand your concern better.</ChatUI>
-        
-  
-              {data?.allMsgs?.map((msg:any) => msg.type=='image' ? 
-              <ChatUI user={msg.user} image={data?.patient?.patient_number} >
-                <img src={msg.data} alt="Image not available at the moment" className="h-32 w-32 rounded-sm" /></ChatUI> :<ChatUI image={msg.user=='doctor' ? 'doctor' :data?.patient?.patient_number } user={msg.user}>{msg.text}</ChatUI>)}    </div>  
+ {/* MESSAGEWRAPPER */}
+ <MessageWrapper data={data}/>
         </div>
         <div className="absolute bottom-0  w-full border-t border-black">
           {/* hello */}
