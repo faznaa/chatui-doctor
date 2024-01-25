@@ -105,7 +105,7 @@ const ChatRepeatComponent = ({ children, sidebar, data }: any) => (
     </div>
     {/* Chatbox  */}
     <div className="w-full flex justify-around items-center mt-20">
-      <div className="w-1/2 sm:max-w-md md:max-w-xl bg-white rounded-3xl  mt-20 mx-12 h-[700px] overflow-y-hidden relative ">
+      <div className="w-1/2 sm:max-w-md md:max-w-xl bg-white rounded-3xl  mt-20 mx-12 h-[700px] shadow-[8.0px_8.0px_8.0px_rgba(0,0,0,0.38)] shadow-2xl overflow-y-hidden relative ">
         <div className="w-full flex items-center justify-center gap-y-4 p-4">
           <div className="w-20 h-20  overflow-hidden rounded-[50%]  bg-white flex justify-center items-center">
             <img
@@ -205,7 +205,7 @@ const ChatPage2 = ({
       data={data}
       sidebar={
         data?.report?.summary?.length>0 ? (
-          <div className="font-semibold bg-white sm:max-w-md px-4 rounded-lg h-[600px] mt-20 overflow-y-scroll">
+          <div className="font-semibold bg-white   sm:max-w-md px-4 rounded-lg h-[600px] shadow-[8.0px_8.0px_8.0px_rgba(0,0,0,0.38)] mt-20 overflow-y-scroll">
             <div className="flex justify-end p-2 ">
               {/* <button
                 onClick={() => updateData("isMessageGeneratedVisible", false)}
@@ -239,6 +239,13 @@ const ChatPage2 = ({
             ) : (
               ""
             )}
+
+              Images
+            <div className="grid grid-cols-3 gap-y-3 mt-3">
+            {data?.report?.new_images?.length > 0 && data?.report?.new_images?.map((image:any) => (
+              <img src={image} alt="Not available at the moment" className="h-32 w-32 rounded-sm" />
+            ))}
+            </div>
             <div className="my-4">
               <br />
               {data?.report.preferred_communication
@@ -402,6 +409,9 @@ export default function ChatSteps() {
       if (res.summary?.length > 0) {
         updateData("report", res);
       }
+      if(res.images?.length > 0){
+        getImages(res.images)
+      }
       return res;
     }catch(err){
       console.log(err)
@@ -485,6 +495,30 @@ export default function ChatSteps() {
       reportFn()
     }
   },[data?.selectedConcern])
+
+  const getImages = async(_images:any) => {
+    console.log("GETTING IMAGES")
+    const images = await Promise.all(_images?.map((image:any) => {
+      return new Promise(async(resolve,reject) => {
+        const _data = await axios.post(`${baseUrl}/get-image`,{
+            imageId:image
+          },
+          {headers: {
+            apiKey: process.env.NEXT_PUBLIC_SECRET_KEY_LENNY,
+          }}
+        )
+        resolve(_data.data?.image)
+      })
+    }))
+    // const images = await Promise.all(_images)
+    setData((data:any) => ({...data,report:{...data.report,new_images:images}}))
+  }
+  // useEffect(() => {
+    
+  //   if(data?.report?.images?.length > 0) {
+  //      getImages()
+  //   }
+  // }, [data?.report])
   const deleteChat = async () => {
     await axios.post(
       `${baseUrl}/delete`,
