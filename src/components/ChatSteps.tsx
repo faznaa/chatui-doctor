@@ -275,7 +275,7 @@ const ChatPage2 = ({
               Press here to see the message
               <br /> generated for the
               <br /> on-call provider
-              {data?.reportLoading && "Loading..."}
+              {/* {data?.reportLoading && "Loading..."} */}
             </button>
             <button
               className="mt-6 bg-white py-4 px-2 rounded-lg"
