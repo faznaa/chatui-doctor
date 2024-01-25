@@ -240,7 +240,7 @@ const ChatPage2 = ({
             )}
 
               Images :
-            <div className="grid grid-cols-3 gap-y-3 mt-3">
+            <div className="grid grid-cols-3 gap-x-2 gap-y-3 mt-3">
             {data?.report?.new_images?.length > 0 && data?.report?.new_images?.map((image:any) => (
               <img src={image} alt="Not available at the moment" className="h-32 w-32 rounded-sm" />
             ))}
