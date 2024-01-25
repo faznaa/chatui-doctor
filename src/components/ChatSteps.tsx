@@ -1,10 +1,12 @@
 import { concerns, people } from "@/helpers/data";
-import { ArrowLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useMemo, useState } from "react";
 import { useStep } from "usehooks-ts";
 import AudioRecorderApp from "./AudioRecorder";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ImageUpload from "./UploadImage";
+import Modal from "./Modal";
 
 const Home = ({ goToNextStep }: any) => (
   <div className="text-center flex flex-col ">
@@ -81,7 +83,7 @@ const ChatRepeatComponent = ({ children, sidebar, data }: any) => (
     </div>
     {/* Chatbox  */}
     <div className="w-full flex justify-around items-center mt-20">
-      <div className="w-1/2 sm:max-w-md bg-white rounded-3xl  mt-20 mx-12 h-[700px] overflow-y-hidden relative ">
+      <div className="w-1/2 sm:max-w-md md:max-w-lg bg-white rounded-3xl  mt-20 mx-12 h-[700px] overflow-y-hidden relative ">
         <div className="w-full flex items-center justify-center gap-y-4 p-4">
           <div className="w-20 h-20  overflow-hidden rounded-[50%]  bg-white flex justify-center items-center">
             <img
@@ -157,6 +159,7 @@ const ChatPage2 = ({
   start,
   getReport,
   deleteChat,
+  setImageModal
 }: any) => {
   const [msg, setMsg] = useState("");
   const checkIfEnterPressed = async (e: any) => {
@@ -251,7 +254,7 @@ const ChatPage2 = ({
             {data?.patient?.surgeon} understand your concern better.</ChatUI>
         
   
-              {data?.allMsgs?.map(({user,text}:any) => <ChatUI user={user}>{text}</ChatUI>)}    </div>  
+              {data?.allMsgs?.map((msg:any) => msg.type=='image' ? <ChatUI user={msg.user}><img src={msg.data} className="h-32 w-32 rounded-sm" /></ChatUI> :<ChatUI user={msg.user}>{msg.text}</ChatUI>)}    </div>  
         </div>
         <div className="absolute bottom-0  w-full border-t border-black">
           {/* hello */}
@@ -273,6 +276,11 @@ const ChatPage2 = ({
               placeholder="Type here"
               onKeyUp={(e) => checkIfEnterPressed(e)}
             />
+
+            <button onClick={() => setImageModal(true)} className="mx-2">
+              <PhotoIcon className="w-6 h-6" />
+            </button>
+           
             {/* </div> */}
             {/* <div className="mr-3  flex justify-end absolute right-2">
               <div className="w-64 bg-green-300">a</div>
@@ -302,7 +310,10 @@ export default function ChatSteps() {
     reportLoading: false,
     isFirstMessage: false,
   });
+  const [images,setImages]  = useState<any>([])
+
   const [currentStep, helpers] = useStep(5);
+  const [imageModal, setImageModal] = useState(false);
   const {
     canGoToPrevStep,
     canGoToNextStep,
@@ -384,18 +395,44 @@ export default function ChatSteps() {
       updateData("reportLoading", false);
     }
   };
-  useEffect(() => {
-    if (data?.selectedConcern && !data?.isFirstMessage) {
-      updateData("isFirstMessage", true);
-      start("start");
-    }
-  }, [data?.selectedConcern]);
+
   // useEffect(() => {
   //   if (data?.allMsgs.length == 4) {
   //     getReport();
   //   }
   // }, [data?.allMsgs]);
+  const getHistoryChat = async () => {
+    const { data: res } = await axios.post(
+      `${baseUrl}/messages`,
+      {
+        patientId: data?.patient.full_name,
+      },
+      {
+        headers: {
+          apiKey: process.env.NEXT_PUBLIC_SECRET_KEY_LENNY,
+        },
+      }
+    );
+    console.log(res);
+    const msgs = res.msgs.map((i:any) => ({text:i.text, user:i.sender=='ai'?'doctor':'patient', type:i.type,data:i.data}))
+    updateData("allMsgs", msgs);
+    if(res.msgs.length ==  0){
+      updateData("isFirstMessage", true);
+      start("start");
+    }
+  }
 
+  useEffect(() => {
+    // if (data?.selectedConcern && !data?.isFirstMessage) {
+    //   updateData("isFirstMessage", true);
+    //   start("start");
+    // }
+  }, [data?.selectedConcern]);
+  useEffect(() => {
+    if(data?.patient?.full_name){
+      getHistoryChat()
+    }
+  },[data?.selectedConcern])
   const deleteChat = async () => {
     await axios.post(
       `${baseUrl}/delete`,
@@ -417,6 +454,18 @@ export default function ChatSteps() {
     toast.success("Chat cleared");
     await start("start");
   };
+  const uploadImage = async () => {
+    await axios.post(`${baseUrl}/create-image`,{
+      patientId: data?.patient.full_name,
+      images:images
+    })
+    toast.success("Images uploaded")
+    const _imagemsgs = images.map((image:any) => ({data:image, user:'patient', type:'image'}))
+    updateData("allMsgs", [...data?.allMsgs, ..._imagemsgs]);
+    setImages([])
+    setImageModal(false)
+    // setData
+  }
 
   return (
     <div
@@ -448,6 +497,7 @@ export default function ChatSteps() {
             start={start}
             getReport={getReport}
             deleteChat={deleteChat}
+            setImageModal={setImageModal}
           />
         )}
       </div>
@@ -463,6 +513,12 @@ export default function ChatSteps() {
           </h1>
         </div>
       )}
+      <Modal title="Image Upload" open={imageModal} setOpen={setImageModal} >
+      <>
+      <ImageUpload images={images} setImages={setImages}    />
+      <button className="bg-sky-600 text-white px-4 py-2 rounded-lg mt-4" onClick={() => uploadImage()}>SUBMIT</button>
+      </>
+      </Modal>
     </div>
   );
 }
