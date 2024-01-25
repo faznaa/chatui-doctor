@@ -83,7 +83,7 @@ const ChatRepeatComponent = ({ children, sidebar, data }: any) => (
     </div>
     {/* Chatbox  */}
     <div className="w-full flex justify-around items-center mt-20">
-      <div className="w-1/2 sm:max-w-md md:max-w-lg bg-white rounded-3xl  mt-20 mx-12 h-[700px] overflow-y-hidden relative ">
+      <div className="w-1/2 sm:max-w-md md:max-w-xl bg-white rounded-3xl  mt-20 mx-12 h-[700px] overflow-y-hidden relative ">
         <div className="w-full flex items-center justify-center gap-y-4 p-4">
           <div className="w-20 h-20  overflow-hidden rounded-[50%]  bg-white flex justify-center items-center">
             <img
@@ -484,7 +484,7 @@ export default function ChatSteps() {
       }
     );
     updateData("allMsgs", []);
-    updateData("selectedConcern", null);
+    // updateData("selectedConcern", null);
     updateData("report", {
       preferred_contact: null,
       summary: [],
