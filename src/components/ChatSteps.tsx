@@ -390,9 +390,9 @@ export default function ChatSteps() {
     updateData("question", res);
     const msgs = response=='start' ? [{text:res, user:"doctor"}] : [{text:response,user:'patient'},{text:res, user:"doctor"}]
     if(response !== 'start'){
-    updateData("allMsgs", [...data?.allMsgs, ...msgs]);
+      setData((data:any) => ({...data,allMsgs:[...data?.allMsgs, ...msgs]}))
     }else{
-      updateData("allMsgs", [...msgs]);
+      setData((data:any) => ({...data,allMsgs:[...msgs]}))
     }
     toast.info("New message from bot");
   };
@@ -553,11 +553,13 @@ export default function ChatSteps() {
       images:images
     })
     toast.success("Images uploaded")
-    await start("[patient uploaded the image]")
     const _imagemsgs = images.map((image:any) => ({data:image, user:'patient', type:'image'}))
-    updateData("allMsgs", [...data?.allMsgs, ..._imagemsgs]);
+    // await updateData("allMsgs", [...data?.allMsgs, ..._imagemsgs]);
+    setData((data:any) => ({...data,allMsgs:[...data?.allMsgs, ..._imagemsgs]}))
     setImages([])
     setImageModal(false)
+    await start("[patient uploaded the image]")
+
     // setData
   }
 
