@@ -8,11 +8,20 @@ import { toast } from "react-toastify";
 import ImageUpload from "./UploadImage";
 import Modal from "./Modal";
 
+const BouncingDots = () => {
+  return (
+    <div className="flex justify-center items-center p-2">
+      <div className="animate-bounce-fast h-2 w-2 bg-gray-400 rounded-full mr-1"></div>
+      <div className="animate-bounce-fast h-2 w-2 bg-gray-300 rounded-full mr-1" style={{ animationDelay: '0.1s' }}></div>
+      <div className="animate-bounce-fast h-2 w-2 bg-gray-400 rounded-full" style={{ animationDelay: '0.2s' }}></div>
+    </div>
+  );
+};
 const MessageWrapper = ({ data}: any) => {
   const ref= useRef<any>(null)
   useEffect(() => {
     ref.current.scrollIntoView({ behavior: "smooth" });
-  }, [data?.allMsgs]);
+  }, [data?.allMsgs, data?.isTyping]);
   return(
     (
       <div className="flex flex-col ">
@@ -20,9 +29,11 @@ const MessageWrapper = ({ data}: any) => {
         {data?.patient?.surgeon} understand your concern better.</ChatUI>
     
     
-          {data?.allMsgs?.map((msg:any) => msg.type=='image' ? 
+          {data?.allMsgs?.filter((msg:any) => msg.text !=='[patient uploaded the image]').map((msg:any) => msg.type=='image' ? 
           <ChatUI user={msg.user} image={data?.patient?.patient_number} id={`${msg.user}-${msg.type}-${msg?.data}`}>
-            <img src={msg.data} alt="Image not available at the moment" className="h-32 w-32 rounded-sm" /></ChatUI> :<ChatUI image={msg.user=='doctor' ? 'doctor' :data?.patient?.patient_number } user={msg.user}>{msg.text}</ChatUI>)}   
+            <img src={msg?.data?.length > 32 ? msg?.data : data?.report?.new_images?.find((i:any) => i._id == msg?.data)?.image} alt="Image not available at the moment" className="h-32 w-32 rounded-sm" /></ChatUI> :<ChatUI image={msg.user=='doctor' ? 'doctor' :data?.patient?.patient_number } user={msg.user}>{msg.text}</ChatUI>)}   
+
+            {data?.isTyping && <ChatUI user="doctor" image='doctor'><BouncingDots /></ChatUI>}
             <div ref={ref} /> 
 
              </div> 
@@ -151,16 +162,16 @@ const ChatPage = ({
   return (
     <ChatRepeatComponent sidebar={""} data={{ patient, ...data }}>
       <>
-        <p className="text-center mt-3 px-2">
-          Hello, {patient.first_name}!, I hope you’re doing well{" "}
-          {patient.pod_day} days since your {patient.procedure} with Dr. {patient.surgeon}! My name is Jess and I’m a re:surge virtual medical
-          assistant. I will help to collect important information about your
-          concern today and urgently send it to Dr. {patient.surgeon} or the covering provider.{" "}
+        <p className="text-center mt-3 px-4">
+          Hello, {patient.first_name}! I hope you’re doing well{" "}
+          {patient.pod_day} days since your {patient.procedure} with Dr. {patient.surgeon}! 
+          I'll be communicating with your care team about your concern today. 
+          To begin, can you please select which of the following describes your concern?
         </p>
-        <p className="text-center mt-3 px-2">
+        {/* <p className="text-center mt-3 px-2">
           To begin, can you please select which of the following best describes
           your concern? If it’s not listed, you can choose “other”.
-        </p>
+        </p> */}
 
         <div className="grid grid-cols-2 gap-y-3 mt-8">
           {concerns.map((concern: any) => (
@@ -215,8 +226,8 @@ const ChatPage2 = ({
             </div>
             <br />
             <div> Name : {data?.patient.full_name} </div>
-            <div> Age : 28 </div>
-            <div>Surgeon : Stein</div>
+            <div> Age : { data?.patient?.age} </div>
+            <div>Surgeon : {data?.patient?.surgeon}</div>
             <div> Procedure : {data?.patient.procedure} </div>
             <div className="my-4">
               Chief complaint : {data?.selectedConcern}
@@ -239,10 +250,12 @@ const ChatPage2 = ({
               ""
             )}
 
-              Images :
+             {data?.report?.new_images?.length > 0 && <div className="my-4"> Images :</div>}
             <div className="grid grid-cols-3 gap-x-2 gap-y-3 mt-3">
             {data?.report?.new_images?.length > 0 && data?.report?.new_images?.map((image:any) => (
-              <img src={image} alt="Not available at the moment" className="h-32 w-32 rounded-sm" />
+              <a href={image?.image} target="_blank" rel='noreferrer'>
+                <img src={image?.image} alt="Not available at the moment" className="h-32 w-32 rounded-sm" />
+              </a>
             ))}
             </div>
             <div className="my-4">
@@ -295,21 +308,21 @@ const ChatPage2 = ({
         </div>
         <div className="absolute bottom-0  w-full border-t border-black">
           {/* hello */}
-          <div className="flex justify-between items-center relative ">
+          <div className="flex justify-start items-center relative ">
             {/* <div className="flex justify-start items-center gap-x-1 mx-2"> */}
             {/* <img src={patient.imageUrl} alt="" className='h-10 w-10 my-2 rounded-full'/> */}
-            <div className="w-10 h-10 my-2 ml-2 overflow-hidden rounded-[50%]  bg-white ">
+            <div className="w-1/12 w-10 h-10 m-2 overflow-hidden rounded-full bg-white ">
               <img
                 src={`/photos/${data?.patient.patient_number}.jpg`}
                 alt=""
-                className="object-cover h-16"
+                className="object-cover h-14 w-14"
               />
             </div>
             <input
               value={msg}
               onChange={(e) => setMsg(e.target.value)}
               type="text"
-              className=" w-full rounded-b-3xl border-0 border-sky-600 rounded-xl px-4 py-2 focus:ring-0 focus:outline-none focus:ring-offset-0"
+              className="w-full rounded-b-3xl border-0 border-sky-600 rounded-xl px-4 py-2 focus:ring-0 focus:outline-none focus:ring-offset-0"
               placeholder="Type here"
               onKeyUp={(e) => checkIfEnterPressed(e)}
             />
@@ -346,6 +359,7 @@ export default function ChatSteps() {
     isMessageGeneratedVisible: false,
     reportLoading: false,
     isFirstMessage: false,
+    isTyping: false,
   });
   const [images,setImages]  = useState<any>([])
 
@@ -371,6 +385,7 @@ export default function ChatSteps() {
 
 
   const start = async (response: any) => {
+    updateData("isTyping", true);
     const { data: res } = await axios.post(
       `${baseUrl}/reply`,
       {
@@ -388,12 +403,14 @@ export default function ChatSteps() {
     // const { data: res} = await axios.get(`${baseUrl}`)
     console.log(res);
     updateData("question", res);
-    const msgs = response=='start' ? [{text:res, user:"doctor"}] : [{text:response,user:'patient'},{text:res, user:"doctor"}]
+    const msgs = [{text:res, user:"doctor"}]
+    updateData("isTyping", false);
     if(response !== 'start'){
       setData((data:any) => ({...data,allMsgs:[...data?.allMsgs, ...msgs]}))
     }else{
       setData((data:any) => ({...data,allMsgs:[...msgs]}))
     }
+    
     toast.info("New message from bot");
   };
 
@@ -511,9 +528,10 @@ export default function ChatSteps() {
             apiKey: process.env.NEXT_PUBLIC_SECRET_KEY_LENNY,
           }}
         )
-        resolve(_data.data?.image)
+        resolve(_data.data)
       })
     }))
+    console.log("IMAGES",images)
     // const images = await Promise.all(_images)
     setData((data:any) => ({...data,report:{...data.report,new_images:images}}))
   }
@@ -543,8 +561,8 @@ export default function ChatSteps() {
     });
     toast.success("Chat cleared");
     setTimeout(async() => {
-      await start("start");
-
+      // Router.
+      setStep(2)
     },1000)
   };
   const uploadImage = async () => {
@@ -604,7 +622,7 @@ export default function ChatSteps() {
       )}
       {currentStep > 1 && (
         <div className="absolute top-0 left-0 h-20">
-          <h1 className="text-white text-2xl font-bold p-6">
+          <h1 className="text-white text-2xl font-bold p-6 cursor-pointer">
             <ArrowLeftIcon onClick={goToPrevStep} className="w-8 h-8" />
           </h1>
         </div>
