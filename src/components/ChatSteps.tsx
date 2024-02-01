@@ -562,7 +562,7 @@ export default function ChatSteps() {
     toast.success("Chat cleared");
     setTimeout(async() => {
       // Router.
-      updateData("selectedConcern", true);
+      updateData("selectedConcern", null);
       setStep(2)
     },1000)
   };
