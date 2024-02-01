@@ -405,7 +405,7 @@ export default function ChatSteps() {
     // const { data: res} = await axios.get(`${baseUrl}`)
     console.log(res);
     updateData("question", res);
-    const isLast = res.includes("Thank you for trusting re:surge with this important communication");
+    const isLast = res.includes("Thank you for trusting re:surge with this important communication") || res.includes('calling 911.');
     updateData("isChatDisabled", isLast);
     const msgs = [{text:res, user:"doctor"}]
     updateData("isTyping", false);
@@ -417,6 +417,13 @@ export default function ChatSteps() {
     
     toast.info("New message from bot");
   };
+  useEffect(() => {
+    const lastMessage = data?.allMsgs[data?.allMsgs?.length - 1];
+    if (lastMessage?.user == "doctor" && (lastMessage?.text.includes("Thank you for trusting re:surge with this important communication") || lastMessage?.text.includes('calling 911.')))
+     {
+      updateData("isChatDisabled", true);
+     }
+  },[data?.allMsgs])
 
   const getReport = async () => {
     try{

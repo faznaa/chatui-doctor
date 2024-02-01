@@ -178,11 +178,11 @@ const concerns = [
   "Pain",
   "Constipation",
   "Prescription issue",
-  "Swelling",
+  // "Swelling",
   "Wound VAC",
   "Urinary Symptoms",
   "Drain Issues",
-  "Other",
+  // "Other",
 ];
 
 const concern_starting_test = {

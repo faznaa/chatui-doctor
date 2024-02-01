@@ -28,6 +28,10 @@ function ImageUpload({images,setImages}:any) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple: true, // Allow multiple file uploads
+    accept:{
+      'image/jpeg': [],
+      'image/png': []
+    }
   });
 
   return (
