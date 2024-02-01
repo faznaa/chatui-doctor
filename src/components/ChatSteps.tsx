@@ -322,12 +322,13 @@ const ChatPage2 = ({
               value={msg}
               onChange={(e) => setMsg(e.target.value)}
               type="text"
-              className="w-full rounded-b-3xl border-0 border-sky-600 rounded-xl px-4 py-2 focus:ring-0 focus:outline-none focus:ring-offset-0"
+              className="w-full disabled:bg-gray-300 rounded-b-3xl border-0 border-sky-600 rounded-xl px-4 py-2 focus:ring-0 focus:outline-none focus:ring-offset-0"
               placeholder="Type here"
+              disabled={data?.isChatDisabled}
               onKeyUp={(e) => checkIfEnterPressed(e)}
             />
 
-            <button onClick={() => setImageModal(true)} className="mx-2">
+            <button onClick={() => setImageModal(true)} disabled={data?.isChatDisabled} className="mx-2 disabled:text-gray-300">
               <PhotoIcon className="w-6 h-6" />
             </button>
            
@@ -360,6 +361,7 @@ export default function ChatSteps() {
     reportLoading: false,
     isFirstMessage: false,
     isTyping: false,
+    isChatDisabled: false
   });
   const [images,setImages]  = useState<any>([])
 
@@ -403,6 +405,8 @@ export default function ChatSteps() {
     // const { data: res} = await axios.get(`${baseUrl}`)
     console.log(res);
     updateData("question", res);
+    const isLast = res.includes("Thank you for trusting re:surge with this important communication");
+    updateData("isChatDisabled", isLast);
     const msgs = [{text:res, user:"doctor"}]
     updateData("isTyping", false);
     if(response !== 'start'){
@@ -510,7 +514,7 @@ export default function ChatSteps() {
      }
       
     }
-    if(data?.patient?.full_name){
+    if(data?.patient?.full_name && data?.selectedConcern){
      
       // getReport()
       reportFn()
