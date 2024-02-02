@@ -93,8 +93,8 @@ const ChoosePatient = ({ goToNextStep, data, updateData }: any) => {
   );
 };
 
-const ChatRepeatComponent = ({ children, sidebar, data }: any) => (
-  <div className="relative w-full flex flex-col items-center min-w-screen ">
+const ChatRepeatComponent = ({ children, sidebar, data, height }: any) => (
+  <div className="relative w-full flex flex-col items-center min-w-screen pb-20 ">
     {/* Top left corner profile picture  */}
     <div className="absolute top-0 left-20 z-10 text-white m-4">
       <div className="flex justify-start gap-x-4">
@@ -116,7 +116,7 @@ const ChatRepeatComponent = ({ children, sidebar, data }: any) => (
     </div>
     {/* Chatbox  */}
     <div className="w-full flex justify-around items-center mt-20">
-      <div className="w-1/2 sm:max-w-md md:max-w-xl bg-white rounded-3xl  mt-20 mx-12 h-[700px] shadow-[8.0px_8.0px_8.0px_rgba(0,0,0,0.38)] shadow-2xl overflow-y-hidden relative ">
+      <div className={`w-1/2 sm:max-w-md md:max-w-xl bg-white rounded-3xl  mt-20 mx-12 ${height} shadow-[8.0px_8.0px_8.0px_rgba(0,0,0,0.38)] shadow-2xl overflow-y-hidden relative `}>
         <div className="w-full flex items-center justify-center gap-y-4 p-4">
           <div className="w-20 h-20  overflow-hidden rounded-[50%]  bg-white flex justify-center items-center">
             <img
@@ -160,8 +160,8 @@ const ChatPage = ({
   };
 
   return (
-    <ChatRepeatComponent sidebar={""} data={{ patient, ...data }}>
-      <>
+    <ChatRepeatComponent sidebar={""} data={{ patient, ...data }} height='h-[550px]'>
+      <div className="flex flex-col justify-between">
         <p className="text-center mt-3 px-4">
           Hello, {patient.first_name}! I hope you’re doing well{" "}
           {patient.pod_day} days since your {patient.procedure} with Dr. {patient.surgeon}! 
@@ -185,7 +185,7 @@ const ChatPage = ({
             </div>
           ))}
         </div>
-      </>
+      </div>
     </ChatRepeatComponent>
   );
 };
@@ -209,10 +209,16 @@ const ChatPage2 = ({
       start(_msg);
     }
   };
+  const getDatebeforeNdays = (n:string) => {
+    const date = new Date();
+    date.setDate(date.getDate() - parseInt(n) -1);
+    return date.toDateString();
+  }
 
   return (
     <ChatRepeatComponent
       data={data}
+      height="h-[700px]"
       sidebar={
         data?.report?.summary?.length>0 ? (
           <div className="font-semibold bg-white   sm:max-w-md px-4 rounded-lg h-[600px] shadow-[8.0px_8.0px_8.0px_rgba(0,0,0,0.38)] mt-20 overflow-y-scroll">
@@ -229,6 +235,8 @@ const ChatPage2 = ({
             <div> Age : { data?.patient?.age} </div>
             <div>Surgeon : {data?.patient?.surgeon}</div>
             <div> Procedure : {data?.patient.procedure} </div>
+            {/* Surgery date is current date - pod date  */}
+            <div> Surgery date: {getDatebeforeNdays(data?.patient?.pod_day)}</div>
             <div className="my-4">
               Chief complaint : {data?.selectedConcern}
             </div>
